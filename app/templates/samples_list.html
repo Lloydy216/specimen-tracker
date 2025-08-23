@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h1>Samples</h1>
+  <div class="toolbar">
+    <form method="get" aria-label="Search samples">
+      <label for="q" class="visually-hidden">Search</label>
+      <input id="q" name="q" value="{{ q }}" placeholder="Search by patient or type" aria-label="Search samples">
+      <button class="btn" type="submit">Search</button>
+    </form>
+    <a class="btn secondary" href="{{ url_for('main.samples_new') }}">Add sample</a>
+  </div>
+  <table>
+    <thead><tr>
+      <th scope="col">ID</th>
+      <th scope="col">Patient</th>
+      <th scope="col">Type</th>
+      <th scope="col">Collected</th>
+      <th scope="col">Status</th>
+      <th scope="col">Actions</th>
+    </tr></thead>
+    <tbody>
+    {% for s in samples %}
+      <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.patient.full_name }}</td>
+        <td>{{ s.sample_type }}</td>
+        <td>{{ s.collection_datetime.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td><span class="badge">{{ s.status }}</span></td>
+        <td>
+          <a class="btn small" href="{{ url_for('main.samples_edit', sample_id=s.id) }}">Edit</a>
+          <form class="inline" method="post" action="{{ url_for('main.samples_delete', sample_id=s.id) }}">
+            <button class="btn small danger" data-confirm="Delete this sample?">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

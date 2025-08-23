@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h1>Test Orders</h1>
+  
+  <!-- Enhanced Toolbar with Filters -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <a class="btn" href="{{ url_for('main.tests_new') }}">Add Test Order</a>
+    </div>
+    
+    <div class="toolbar-right">
+      <!-- Status Filter -->
+      <div class="filter-group">
+        <label for="status-filter" class="filter-label">Status:</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+          <option value="">All Statuses</option>
+          <option value="pending" {{ 'selected' if status_filter == 'pending' }}>Pending Results</option>
+          <option value="completed" {{ 'selected' if status_filter == 'completed' }}>Completed</option>
+        </select>
+      </div>
+      
+      <!-- Search Form -->
+      <form method="get" class="search-form">
+        <input type="search" name="q" value="{{ q }}" placeholder="Search tests, patients, or samples..." 
+               aria-label="Search tests">
+        <button type="submit" class="btn secondary">Search</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Results Summary -->
+  {% if q or status_filter %}
+  <div class="results-summary">
+    <p>
+      Showing {{ tests|length }} test{{ 's' if tests|length != 1 else '' }}
+      {% if q %}matching "{{ q }}"{% endif %}
+      {% if status_filter %}{% if q %} and {% endif %}with status "{{ status_filter }}"{% endif %}
+      <a href="{{ url_for('main.tests_list') }}" class="clear-filters">Clear filters</a>
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- Tests Table -->
+  {% if tests %}
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col" data-sortable>ID</th>
+          <th scope="col" data-sortable>Patient</th>
+          <th scope="col" data-sortable>Sample</th>
+          <th scope="col" data-sortable>Assay</th>
+          <th scope="col" data-sortable>Priority</th>
+          <th scope="col" data-sortable>Status</th>
+          <th scope="col" data-sortable>Result Date</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tests %}
+        <tr class="test-row status-{{ 'completed' if t.result else 'pending' }}">
+          <td><strong>#{{ t.id }}</strong></td>
+          <td>
+            <a href="{{ url_for('main.patients_edit', patient_id=t.sample.patient.id) }}" class="patient-link">
+              {{ t.sample.patient.full_name }}
+            </a>
+            <br>
+            <small class="nhs-number">{{ t.sample.patient.nhs_number }}</small>
+          </td>
+          <td>
+            <span class="sample-info">
+              <strong>#{{ t.sample_id }}</strong>
+              <br>
+              <span class="sample-type">{{ t.sample.sample_type }}</span>
+              <br>
+              <small>{{ t.sample.collection_datetime.strftime('%Y-%m-%d %H:%M') }}</small>
+            </span>
+          </td>
+          <td>
+            <span class="assay-name">{{ t.assay }}</span>
+          </td>
+          <td>
+            <span class="priority-badge priority-{{ t.priority }}">
+              {{ t.priority|title }}
+            </span>
+          </td>
+          <td>
+            {% if t.result %}
+              <span class="badge status-completed">Completed</span>
+            {% else %}
+              <span class="badge status-pending">Pending</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if t.result_date %}
+              {{ t.result_date.strftime('%Y-%m-%d') }}
+            {% else %}
+              <span class="no-date">—</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="action-buttons">
+              <a class="btn small" href="{{ url_for('main.tests_edit', test_id=t.id) }}">
+                {{ 'View Result' if t.result else 'Add Result' }}
+              </a>
+              <form class="inline" method="post" action="{{ url_for('main.tests_delete', test_id=t.id) }}">
+                <button class="btn small danger" data-confirm="Delete this test order? This action cannot be undone.">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Pagination Info -->
+  <div class="pagination-info">
+    <p>Showing {{ tests|length }} of {{ tests|length }} test orders</p>
+  </div>
+  
+  {% else %}
+  <!-- Empty State -->
+  <div class="empty-state">
+    {% if q or status_filter %}
+      <p>No test orders found matching your criteria.</p>
+      <p><a href="{{ url_for('main.tests_list') }}">View all test orders</a> or <a href="{{ url_for('main.tests_new') }}">add a new one</a>.</p>
+    {% else %}
+      <p>No test orders yet.</p>
+      <p><a href="{{ url_for('main.tests_new') }}">Add your first test order</a> to get started.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<!-- Hidden form for status filter -->
+<form id="status-form" method="get" style="display: none;">
+  <input type="hidden" name="q" value="{{ q }}">
+  <input type="hidden" name="status" id="status-input">
+</form>
+
+<script>
+// Handle status filter changes
+document.getElementById('status-filter').addEventListener('change', function() {
+  const form = document.getElementById('status-form');
+  const statusInput = document.getElementById('status-input');
+  const qInput = form.querySelector('input[name="q"]');
+  
+  statusInput.value = this.value;
+  qInput.value = '{{ q }}';
+  form.submit();
+});
+</script>
+{% endblock %}

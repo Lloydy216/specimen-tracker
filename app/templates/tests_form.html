@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h1>{{ 'Edit test order' if test_order else 'New test order' }}</h1>
+  <form method="post" novalidate>
+    <div class="field">
+      <label for="sample_id">Sample</label>
+      <select id="sample_id" name="sample_id" aria-label="Select sample">
+        {% for s in samples %}
+          <option value="{{ s.id }}" {% if test_order and test_order.sample_id == s.id %}selected{% endif %}>
+            #{{ s.id }} — {{ s.sample_type }} for {{ s.patient.full_name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="assay">Assay</label>
+      <input id="assay" name="assay" required value="{{ test_order.assay if test_order else '' }}" list="assays">
+      <datalist id="assays">
+        <option>FBC</option>
+        <option>CRP</option>
+        <option>LFT</option>
+        <option>COVID-PCR</option>
+      </datalist>
+    </div>
+    <div class="field">
+      <label for="priority">Priority</label>
+      <select id="priority" name="priority">
+        {% for pr in ['routine','urgent'] %}
+          <option {% if test_order and test_order.priority == pr %}selected{% endif %}>{{ pr }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="result">Result</label>
+      <textarea id="result" name="result" rows="4">{{ test_order.result if test_order else '' }}</textarea>
+    </div>
+    <div class="field">
+      <label for="result_date">Result date</label>
+      <input type="date" id="result_date" name="result_date"
+             value="{{ test_order.result_date.strftime('%Y-%m-%d') if test_order and test_order.result_date else '' }}">
+    </div>
+    <div class="actions">
+      <button class="btn" type="submit">Save</button>
+      <a class="btn secondary" href="{{ url_for('main.tests_list') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+<section aria-labelledby="dashboard-heading" class="container">
+  <h1 id="dashboard-heading">Dashboard</h1>
+  
+  <!-- Key Metrics -->
+  <div class="grid">
+    <div class="card" role="region" aria-label="Total patients">
+      <h2>Patients</h2>
+      <p class="metric">{{ total_patients }}</p>
+      <a class="btn" href="{{ url_for('main.patients_list') }}">Manage patients</a>
+    </div>
+    <div class="card" role="region" aria-label="Total samples">
+      <h2>Samples</h2>
+      <p class="metric">{{ total_samples }}</p>
+      <a class="btn" href="{{ url_for('main.samples_list') }}">Manage samples</a>
+    </div>
+    <div class="card" role="region" aria-label="Total tests">
+      <h2>Tests</h2>
+      <p class="metric">{{ total_tests }}</p>
+      <a class="btn" href="{{ url_for('main.tests_list') }}">Manage tests</a>
+    </div>
+    <div class="card" role="region" aria-label="Pending results">
+      <h2>Pending Results</h2>
+      <p class="metric pending">{{ pending_results }}</p>
+      <a class="btn" href="{{ url_for('main.tests_list') }}?status=pending">View pending</a>
+    </div>
+  </div>
+
+  <!-- Status Overview -->
+  <section aria-labelledby="status-overview-heading" class="mt">
+    <h2 id="status-overview-heading">Sample Status Overview</h2>
+    <div class="status-grid">
+      <div class="status-card received">
+        <h3>Received</h3>
+        <p class="status-count">{{ status_counts.received }}</p>
+      </div>
+      <div class="status-card processing">
+        <h3>Processing</h3>
+        <p class="status-count">{{ status_counts.processing }}</p>
+      </div>
+      <div class="status-card completed">
+        <h3>Completed</h3>
+        <p class="status-count">{{ status_counts.completed }}</p>
+      </div>
+      <div class="status-card rejected">
+        <h3>Rejected</h3>
+        <p class="status-count">{{ status_counts.rejected }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Activity -->
+  <section aria-labelledby="recent-samples-heading" class="mt">
+    <h2 id="recent-samples-heading">Recent Activity</h2>
+    {% if recent_samples %}
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Patient</th>
+            <th scope="col">Type</th>
+            <th scope="col">Collected</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in recent_samples %}
+          <tr>
+            <td><strong>#{{ s.id }}</strong></td>
+            <td>
+              <a href="{{ url_for('main.patients_edit', patient_id=s.patient.id) }}" class="patient-link">
+                {{ s.patient.full_name }}
+              </a>
+            </td>
+            <td><span class="sample-type">{{ s.sample_type }}</span></td>
+            <td>{{ s.collection_datetime.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td><span class="badge status-{{ s.status }}">{{ s.status|title }}</span></td>
+            <td>
+              <a class="btn small" href="{{ url_for('main.samples_edit', sample_id=s.id) }}">View</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>No samples yet. <a href="{{ url_for('main.samples_new') }}">Add your first sample</a> to get started.</p>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- Quick Actions -->
+  <section aria-labelledby="quick-actions-heading" class="mt">
+    <h2 id="quick-actions-heading">Quick Actions</h2>
+    <div class="quick-actions">
+      <a href="{{ url_for('main.patients_new') }}" class="btn">Add Patient</a>
+      <a href="{{ url_for('main.samples_new') }}" class="btn">Add Sample</a>
+      <a href="{{ url_for('main.tests_new') }}" class="btn">Add Test</a>
+      <a href="{{ url_for('main.samples_list') }}?status=processing" class="btn secondary">View Processing</a>
+    </div>
+  </section>
+</section>
+{% endblock %}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ APP_NAME }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header role="banner">
+    <nav aria-label="Primary">
+      <a href="{{ url_for('main.index') }}" class="brand" aria-label="Home">{{ APP_NAME }}</a>
+      <ul role="list">
+        <li><a href="{{ url_for('main.patients_list') }}">Patients</a></li>
+        <li><a href="{{ url_for('main.samples_list') }}">Samples</a></li>
+        <li><a href="{{ url_for('main.tests_list') }}">Tests</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main" tabindex="-1">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-region" role="status" aria-live="polite">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer role="contentinfo">
+    <p>&copy; 2025 Specimen Tracker</p>
+  </footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

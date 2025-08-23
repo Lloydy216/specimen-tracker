@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h1>{{ 'Edit patient' if patient else 'New patient' }}</h1>
+  <form method="post" novalidate aria-describedby="patient-help">
+    <p id="patient-help">Fields marked with * are required.</p>
+    <div class="field">
+      <label for="nhs_number">NHS number *</label>
+      <input id="nhs_number" name="nhs_number" required value="{{ patient.nhs_number if patient else '' }}" pattern="\d{10,12}" aria-describedby="nhs-format">
+      <small id="nhs-format">10–12 digits, no spaces.</small>
+    </div>
+    <div class="field">
+      <label for="full_name">Full name *</label>
+      <input id="full_name" name="full_name" required value="{{ patient.full_name if patient else '' }}">
+    </div>
+    <div class="field">
+      <label for="date_of_birth">Date of birth *</label>
+      <input id="date_of_birth" type="date" name="date_of_birth" required value="{{ patient.date_of_birth if not patient else patient.date_of_birth.strftime('%Y-%m-%d') }}">
+    </div>
+    <div class="actions">
+      <button class="btn" type="submit">Save</button>
+      <a class="btn secondary" href="{{ url_for('main.patients_list') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
