@@ -79,13 +79,16 @@ def test_flask_app():
         print(f"  ✅ Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
         
         # Test blueprints
-        assert 'bp' in [bp.name for bp in app.blueprints.values()]
+        blueprint_names = [bp.name for bp in app.blueprints.values()]
+        assert 'main' in blueprint_names
         print("  ✅ Blueprints registered")
         
         return True
         
     except Exception as e:
         print(f"  ❌ Flask app error: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def test_routes():
@@ -112,6 +115,9 @@ def test_routes():
                 response = client.get(route)
                 if response.status_code == 200:
                     print(f"  ✅ {route} - {description}")
+                elif response.status_code == 302 and route in ['/samples/new', '/tests/new']:
+                    # This is expected - redirects if no patients/samples exist
+                    print(f"  ✅ {route} - {description} (redirects as expected)")
                 else:
                     print(f"  ❌ {route} - Status {response.status_code}")
                     return False
@@ -128,8 +134,8 @@ def test_static_files():
     print("\n📁 Testing Static Files...")
     
     static_files = [
-        'static/css/styles.css',
-        'static/js/app.js'
+        'app/static/css/styles.css',
+        'app/static/js/app.js'
     ]
     
     for file_path in static_files:
