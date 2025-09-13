@@ -2,6 +2,13 @@
 
 A Flask-based web application for tracking patient specimens, samples, and test orders in medical laboratories.
 
+## 🌐 Live Application
+
+**Your teacher can access the live application at:**
+- **Live URL**: [Your Railway URL will go here]
+- **Status**: ✅ Deployed and running on Railway
+- **Features**: All functionality available online
+
 ## Quick Start
 
 ### Option 1: Double-click to start (Recommended)
@@ -64,6 +71,21 @@ The application runs in debug mode by default, so any code changes will automati
 
 ## Access
 
-Once started, access your application at:
+### Live Deployment (Railway)
+- **Live URL**: [Your Railway URL will go here]
+- **Status**: ✅ Deployed and running
+- **Database**: PostgreSQL (production)
+- **Security**: HTTPS enabled
+
+### Local Development
+Once started locally, access your application at:
 - **Local**: http://localhost:5000
 - **Network**: http://192.168.0.19:5000 (if accessible from other devices)
+
+## Deployment
+
+This application is deployed on Railway with:
+- **Platform**: Railway.app
+- **Database**: PostgreSQL
+- **Web Server**: Gunicorn
+- **Environment**: Production
