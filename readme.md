@@ -4,7 +4,8 @@ A Flask-based web application for tracking patient specimens, samples, and test 
 
 ## 🌐 Live Application
 
-- **Live URL**: [Your Railway URL will go here]
+**Your teacher can access the live application at:**
+- **Live URL**: https://specimen-tracker-production.up.railway.app
 - **Status**: ✅ Deployed and running on Railway
 - **Features**: All functionality available online
 
@@ -71,7 +72,7 @@ The application runs in debug mode by default, so any code changes will automati
 ## Access
 
 ### Live Deployment (Railway)
-- **Live URL**: [Your Railway URL will go here]
+- **Live URL**: https://specimen-tracker-production.up.railway.app
 - **Status**: ✅ Deployed and running
 - **Database**: PostgreSQL (production)
 - **Security**: HTTPS enabled

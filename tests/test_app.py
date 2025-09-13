@@ -26,7 +26,7 @@ def test_create_patient(client):
         'full_name': 'Jane Doe',
         'date_of_birth': '1990-01-01'
     }, follow_redirects=True)
-    assert b'Patient created.' in rv.data
+    assert b'Patient created successfully.' in rv.data
     # Read (list)
     rv = client.get('/patients?q=Jane')
     assert b'Jane Doe' in rv.data
