@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from . import db
 from .models import Patient, Sample, TestOrder
@@ -144,7 +144,7 @@ def samples_new():
             if collection_datetime:
                 collection_dt = datetime.strptime(collection_datetime, "%Y-%m-%dT%H:%M")
             else:
-                collection_dt = datetime.utcnow()
+                collection_dt = datetime.now(timezone.utc)
         except ValueError:
             flash("Invalid collection date/time format.", "error")
             return redirect(url_for("main.samples_new"))
@@ -262,7 +262,7 @@ def tests_edit(test_id):
                 flash("Invalid result date format.", "error")
                 return redirect(url_for("main.tests_edit", test_id=test_id))
         elif t.result:
-            t.result_date = datetime.utcnow()
+            t.result_date = datetime.now(timezone.utc)
         else:
             t.result_date = None
         

@@ -23,6 +23,12 @@ def create_app():
     migrate.init_app(app, db)
 
     with app.app_context():
+        # Create tables if they don't exist (for Railway deployment)
+        try:
+            db.create_all()
+        except Exception as e:
+            print(f"Database initialization warning: {e}")
+        
         from .routes import bp
         app.register_blueprint(bp)
 
