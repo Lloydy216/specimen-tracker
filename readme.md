@@ -4,7 +4,6 @@ A Flask-based web application for tracking patient specimens, samples, and test 
 
 ## 🌐 Live Application
 
-**Your teacher can access the live application at:**
 - **Live URL**: [Your Railway URL will go here]
 - **Status**: ✅ Deployed and running on Railway
 - **Features**: All functionality available online
